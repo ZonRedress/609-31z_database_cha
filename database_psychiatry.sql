@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 14 2025 г., 15:44
+-- Время создания: Апр 14 2025 г., 16:12
 -- Версия сервера: 5.7.33
 -- Версия PHP: 7.1.33
 
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `appointments` (
   `appointment_id` int(11) NOT NULL,
   `client_id` int(11) NOT NULL,
-  `psychologist_id` int(11) NOT NULL,
+  `schedule_id` int(11) NOT NULL,
   `appointment_datetime` datetime NOT NULL COMMENT 'Дата и время консультации',
   `status` tinyint(4) NOT NULL COMMENT '1 - запланирована, 2 - завершена',
   `topic` varchar(255) DEFAULT NULL COMMENT 'Тема консультации',
@@ -41,13 +41,13 @@ CREATE TABLE `appointments` (
 -- Дамп данных таблицы `appointments`
 --
 
-INSERT INTO `appointments` (`appointment_id`, `client_id`, `psychologist_id`, `appointment_datetime`, `status`, `topic`, `notes`) VALUES
-(1, 1, 4, '2025-04-15 11:00:00', 1, 'Проблемы на работе', 'Клиент испытывает стресс на работе.'),
-(2, 2, 4, '2025-04-12 10:00:00', 2, 'Семейные отношения', 'Завершена. Рекомендована семейная терапия.'),
-(3, 3, 5, '2025-04-16 09:00:00', 2, 'Тревожность', 'Назначены дыхательные упражнения.'),
-(4, 1, 5, '2025-04-10 15:00:00', 2, 'Переезд и адаптация', 'Обсуждение переезда в другой город.'),
-(5, 2, 6, '2025-04-17 14:00:00', 1, 'Страх публичных выступлений', 'Консультация в процессе.'),
-(6, 3, 6, '2025-04-13 13:00:00', 2, 'Прокрастинация', 'Предложены методы постановки целей.');
+INSERT INTO `appointments` (`appointment_id`, `client_id`, `schedule_id`, `appointment_datetime`, `status`, `topic`, `notes`) VALUES
+(1, 1, 2, '2025-04-15 11:00:00', 1, 'Проблемы на работе', 'Клиент испытывает стресс.'),
+(2, 2, 3, '2025-04-16 09:00:00', 2, 'Семейные отношения', 'Завершена. Обсуждение конфликта.'),
+(3, 3, 6, '2025-04-17 14:00:00', 1, 'Тревожность', 'Требуется дополнительное наблюдение.'),
+(4, 1, 3, '2025-04-10 15:00:00', 2, 'Переезд и адаптация', 'Обсуждение переезда в другой город.'),
+(5, 2, 6, '2025-04-13 13:00:00', 2, 'Страх публичных выступлений', 'Рекомендована практика.'),
+(6, 3, 2, '2025-04-11 12:00:00', 1, 'Прокрастинация', 'Обсуждение причин откладывания дел.');
 
 -- --------------------------------------------------------
 
@@ -113,7 +113,7 @@ INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `phone`, `ro
 ALTER TABLE `appointments`
   ADD PRIMARY KEY (`appointment_id`),
   ADD KEY `client_id` (`client_id`),
-  ADD KEY `psychologist_id` (`psychologist_id`);
+  ADD KEY `schedule_id` (`schedule_id`);
 
 --
 -- Индексы таблицы `schedule`
@@ -160,7 +160,7 @@ ALTER TABLE `users`
 --
 ALTER TABLE `appointments`
   ADD CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `users` (`user_id`),
-  ADD CONSTRAINT `appointments_ibfk_2` FOREIGN KEY (`psychologist_id`) REFERENCES `users` (`user_id`);
+  ADD CONSTRAINT `appointments_ibfk_2` FOREIGN KEY (`schedule_id`) REFERENCES `schedule` (`schedule_id`);
 
 --
 -- Ограничения внешнего ключа таблицы `schedule`
