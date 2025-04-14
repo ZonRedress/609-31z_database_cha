@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 14 2025 г., 17:04
+-- Время создания: Апр 14 2025 г., 17:28
 -- Версия сервера: 5.7.33
 -- Версия PHP: 7.1.33
 
@@ -94,12 +94,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `phone`, `role`) VALUES
-(1, 'Иван', 'Петров', 'ivan.petrov@example.com', '+79001112233', 'client'),
-(2, 'Мария', 'Сидорова', 'maria.sidorova@example.com', '+79003445566', 'client'),
-(3, 'Алексей', 'Кузнецов', 'aleksey.kuznecov@example.com', '+79007778899', 'client'),
-(4, 'Елена', 'Иванова', 'elena.ivanova@example.com', '+79000001111', 'psychologist'),
-(5, 'Дмитрий', 'Орлов', 'd.orlov@example.com', '+79002223344', 'psychologist'),
-(6, 'Светлана', 'Миронова', 'svetlana.mironova@example.com', '+79005556677', 'psychologist');
+(1, 'Иван', 'Петров', 'ivan.petrov@mail.ru', '+79001112233', 'client'),
+(2, 'Мария', 'Сидорова', 'maria.sidorova@mail.ru', '+79003445566', 'client'),
+(3, 'Алексей', 'Кузнецов', 'aleksey.kuznecov@mail.ru', '+79007778899', 'client'),
+(4, 'Елена', 'Иванова', 'elena.ivanova@mail.ru', '+79000001111', 'psychologist'),
+(5, 'Дмитрий', 'Орлов', 'd.orlov@mail.ru', '+79002223344', 'psychologist'),
+(6, 'Светлана', 'Миронова', 'svetlana.mironova@mail.ru', '+79005556677', 'psychologist');
 
 --
 -- Индексы сохранённых таблиц
