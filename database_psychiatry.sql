@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 14 2025 г., 10:37
+-- Время создания: Апр 14 2025 г., 15:44
 -- Версия сервера: 5.7.33
 -- Версия PHP: 7.1.33
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- База данных: `609-31z_cda`
+-- База данных: `609-31z_database`
 --
 
 -- --------------------------------------------------------
@@ -32,90 +32,49 @@ CREATE TABLE `appointments` (
   `client_id` int(11) NOT NULL,
   `psychologist_id` int(11) NOT NULL,
   `appointment_datetime` datetime NOT NULL COMMENT 'Дата и время консультации',
-  `status` enum('scheduled','completed','cancelled') DEFAULT 'scheduled' COMMENT 'Статус консультации',
+  `status` tinyint(4) NOT NULL COMMENT '1 - запланирована, 2 - завершена',
   `topic` varchar(255) DEFAULT NULL COMMENT 'Тема консультации',
   `notes` text COMMENT 'Дополнительные заметки'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Бронирования консультаций';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Бронирования консультаций';
 
 --
 -- Дамп данных таблицы `appointments`
 --
 
 INSERT INTO `appointments` (`appointment_id`, `client_id`, `psychologist_id`, `appointment_datetime`, `status`, `topic`, `notes`) VALUES
-(1, 1, 1, '2025-04-16 11:00:00', 'scheduled', 'Семейные конфликты', 'Повторный приём.'),
-(2, 2, 2, '2025-04-17 16:00:00', 'completed', 'Тревожность на работе', 'Обсудили техники релаксации.'),
-(3, 3, 1, '2025-04-18 10:00:00', 'cancelled', 'Развод и дети', 'Клиент отменил за день.'),
-(4, 2, 2, '2025-04-17 15:00:00', 'scheduled', 'Панические атаки', NULL),
-(5, 1, 2, '2025-04-17 14:00:00', 'scheduled', 'Проблемы общения', 'Новая тема.');
+(1, 1, 4, '2025-04-15 11:00:00', 1, 'Проблемы на работе', 'Клиент испытывает стресс на работе.'),
+(2, 2, 4, '2025-04-12 10:00:00', 2, 'Семейные отношения', 'Завершена. Рекомендована семейная терапия.'),
+(3, 3, 5, '2025-04-16 09:00:00', 2, 'Тревожность', 'Назначены дыхательные упражнения.'),
+(4, 1, 5, '2025-04-10 15:00:00', 2, 'Переезд и адаптация', 'Обсуждение переезда в другой город.'),
+(5, 2, 6, '2025-04-17 14:00:00', 1, 'Страх публичных выступлений', 'Консультация в процессе.'),
+(6, 3, 6, '2025-04-13 13:00:00', 2, 'Прокрастинация', 'Предложены методы постановки целей.');
 
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `availability`
+-- Структура таблицы `schedule`
 --
 
-CREATE TABLE `availability` (
-  `availability_id` int(11) NOT NULL,
+CREATE TABLE `schedule` (
+  `schedule_id` int(11) NOT NULL,
   `psychologist_id` int(11) NOT NULL,
   `date` date NOT NULL COMMENT 'Дата доступности',
   `time_from` time NOT NULL COMMENT 'Начало интервала',
   `time_to` time NOT NULL COMMENT 'Конец интервала',
   `status` enum('free','booked') DEFAULT 'free' COMMENT 'Статус слота'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Доступные временные слоты психологов';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Расписание доступных временных слотов психологов';
 
 --
--- Дамп данных таблицы `availability`
+-- Дамп данных таблицы `schedule`
 --
 
-INSERT INTO `availability` (`availability_id`, `psychologist_id`, `date`, `time_from`, `time_to`, `status`) VALUES
-(1, 1, '2025-04-16', '10:00:00', '11:00:00', 'free'),
-(2, 1, '2025-04-16', '11:00:00', '12:00:00', 'booked'),
-(3, 2, '2025-04-17', '14:00:00', '15:00:00', 'free'),
-(4, 2, '2025-04-17', '15:00:00', '16:00:00', 'free'),
-(5, 2, '2025-04-17', '16:00:00', '17:00:00', 'booked');
-
--- --------------------------------------------------------
-
---
--- Структура таблицы `clients`
---
-
-CREATE TABLE `clients` (
-  `client_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `birth_date` date DEFAULT NULL COMMENT 'Дата рождения клиента'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Данные о клиентах';
-
---
--- Дамп данных таблицы `clients`
---
-
-INSERT INTO `clients` (`client_id`, `user_id`, `birth_date`) VALUES
-(1, 1, '1990-04-15'),
-(2, 2, '1985-10-20'),
-(3, 5, '2000-07-09');
-
--- --------------------------------------------------------
-
---
--- Структура таблицы `psychologists`
---
-
-CREATE TABLE `psychologists` (
-  `psychologist_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `specialization` varchar(255) DEFAULT NULL COMMENT 'Специализация психолога',
-  `experience_years` int(11) DEFAULT NULL COMMENT 'Опыт работы (в годах)',
-  `bio` text COMMENT 'Краткое описание или биография'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Данные о психологах';
-
---
--- Дамп данных таблицы `psychologists`
---
-
-INSERT INTO `psychologists` (`psychologist_id`, `user_id`, `specialization`, `experience_years`, `bio`) VALUES
-(1, 3, 'Семейная терапия', 7, 'Опытный специалист в области семейных отношений.'),
-(2, 4, 'Когнитивно-поведенческая терапия', 5, 'Помогаю справляться с тревожностью и стрессом.');
+INSERT INTO `schedule` (`schedule_id`, `psychologist_id`, `date`, `time_from`, `time_to`, `status`) VALUES
+(1, 4, '2025-04-15', '10:00:00', '11:00:00', 'free'),
+(2, 4, '2025-04-15', '11:00:00', '12:00:00', 'booked'),
+(3, 5, '2025-04-16', '09:00:00', '10:00:00', 'booked'),
+(4, 5, '2025-04-16', '10:00:00', '11:00:00', 'free'),
+(5, 6, '2025-04-17', '13:00:00', '14:00:00', 'free'),
+(6, 6, '2025-04-17', '14:00:00', '15:00:00', 'booked');
 
 -- --------------------------------------------------------
 
@@ -125,23 +84,24 @@ INSERT INTO `psychologists` (`psychologist_id`, `user_id`, `specialization`, `ex
 
 CREATE TABLE `users` (
   `user_id` int(11) NOT NULL,
-  `first_name` varchar(255) NOT NULL COMMENT 'Имя пользователя',
-  `last_name` varchar(255) NOT NULL COMMENT 'Фамилия пользователя',
-  `email` varchar(255) NOT NULL COMMENT 'Email пользователя',
-  `phone` varchar(255) DEFAULT NULL COMMENT 'Телефон пользователя',
+  `first_name` varchar(50) NOT NULL COMMENT 'Имя пользователя',
+  `last_name` varchar(50) NOT NULL COMMENT 'Фамилия пользователя',
+  `email` varchar(100) NOT NULL COMMENT 'Email пользователя',
+  `phone` varchar(20) DEFAULT NULL COMMENT 'Телефон пользователя',
   `role` enum('client','psychologist') NOT NULL COMMENT 'Роль пользователя: клиент или психолог'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Общая таблица пользователей системы';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Общая таблица пользователей системы';
 
 --
 -- Дамп данных таблицы `users`
 --
 
 INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `phone`, `role`) VALUES
-(1, 'Иван', 'Петров', 'ivan.petrov@mail.com', '+79161234567', 'client'),
-(2, 'Ольга', 'Сидорова', 'olga.sidorova@mail.com', '+79161234568', 'client'),
-(3, 'Анна', 'Кузнецова', 'anna.kuz@mail.com', '+79161234569', 'psychologist'),
-(4, 'Мария', 'Иванова', 'maria.ivanova@mail.com', '+79161234570', 'psychologist'),
-(5, 'Павел', 'Орлов', 'pavel.orlov@mail.com', '+79161234571', 'client');
+(1, 'Иван', 'Иванов', 'ivanov@mail.ru', '79001112233', 'client'),
+(2, 'Мария', 'Сидорова', 'sidorova@mail.ru', '79002223344', 'client'),
+(3, 'Анна', 'Козлова', 'kozlova@mail.ru', '79003334455', 'client'),
+(4, 'Олег', 'Смирнов', 'smirnov@mail.ru', '79004445566', 'psychologist'),
+(5, 'Екатерина', 'Орлова', 'orlova@mail.ru', '79005556677', 'psychologist'),
+(6, 'Артем', 'Белов', 'belov@mail.ru', '79006667788', 'psychologist');
 
 --
 -- Индексы сохранённых таблиц
@@ -156,25 +116,11 @@ ALTER TABLE `appointments`
   ADD KEY `psychologist_id` (`psychologist_id`);
 
 --
--- Индексы таблицы `availability`
+-- Индексы таблицы `schedule`
 --
-ALTER TABLE `availability`
-  ADD PRIMARY KEY (`availability_id`),
+ALTER TABLE `schedule`
+  ADD PRIMARY KEY (`schedule_id`),
   ADD KEY `psychologist_id` (`psychologist_id`);
-
---
--- Индексы таблицы `clients`
---
-ALTER TABLE `clients`
-  ADD PRIMARY KEY (`client_id`),
-  ADD KEY `user_id` (`user_id`);
-
---
--- Индексы таблицы `psychologists`
---
-ALTER TABLE `psychologists`
-  ADD PRIMARY KEY (`psychologist_id`),
-  ADD KEY `user_id` (`user_id`);
 
 --
 -- Индексы таблицы `users`
@@ -191,31 +137,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT для таблицы `availability`
+-- AUTO_INCREMENT для таблицы `schedule`
 --
-ALTER TABLE `availability`
-  MODIFY `availability_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT для таблицы `clients`
---
-ALTER TABLE `clients`
-  MODIFY `client_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT для таблицы `psychologists`
---
-ALTER TABLE `psychologists`
-  MODIFY `psychologist_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+ALTER TABLE `schedule`
+  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
@@ -225,26 +159,14 @@ ALTER TABLE `users`
 -- Ограничения внешнего ключа таблицы `appointments`
 --
 ALTER TABLE `appointments`
-  ADD CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `clients` (`client_id`),
-  ADD CONSTRAINT `appointments_ibfk_2` FOREIGN KEY (`psychologist_id`) REFERENCES `psychologists` (`psychologist_id`);
+  ADD CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `users` (`user_id`),
+  ADD CONSTRAINT `appointments_ibfk_2` FOREIGN KEY (`psychologist_id`) REFERENCES `users` (`user_id`);
 
 --
--- Ограничения внешнего ключа таблицы `availability`
+-- Ограничения внешнего ключа таблицы `schedule`
 --
-ALTER TABLE `availability`
-  ADD CONSTRAINT `availability_ibfk_1` FOREIGN KEY (`psychologist_id`) REFERENCES `psychologists` (`psychologist_id`);
-
---
--- Ограничения внешнего ключа таблицы `clients`
---
-ALTER TABLE `clients`
-  ADD CONSTRAINT `clients_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
-
---
--- Ограничения внешнего ключа таблицы `psychologists`
---
-ALTER TABLE `psychologists`
-  ADD CONSTRAINT `psychologists_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+ALTER TABLE `schedule`
+  ADD CONSTRAINT `schedule_ibfk_1` FOREIGN KEY (`psychologist_id`) REFERENCES `users` (`user_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
