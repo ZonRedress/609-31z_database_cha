@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 14 2025 г., 16:12
+-- Время создания: Апр 14 2025 г., 17:04
 -- Версия сервера: 5.7.33
 -- Версия PHP: 7.1.33
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- База данных: `609-31z_database`
+-- База данных: `609-31z_cda`
 --
 
 -- --------------------------------------------------------
@@ -31,23 +31,22 @@ CREATE TABLE `appointments` (
   `appointment_id` int(11) NOT NULL,
   `client_id` int(11) NOT NULL,
   `schedule_id` int(11) NOT NULL,
-  `appointment_datetime` datetime NOT NULL COMMENT 'Дата и время консультации',
   `status` tinyint(4) NOT NULL COMMENT '1 - запланирована, 2 - завершена',
   `topic` varchar(255) DEFAULT NULL COMMENT 'Тема консультации',
   `notes` text COMMENT 'Дополнительные заметки'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Бронирования консультаций';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Бронирования консультаций';
 
 --
 -- Дамп данных таблицы `appointments`
 --
 
-INSERT INTO `appointments` (`appointment_id`, `client_id`, `schedule_id`, `appointment_datetime`, `status`, `topic`, `notes`) VALUES
-(1, 1, 2, '2025-04-15 11:00:00', 1, 'Проблемы на работе', 'Клиент испытывает стресс.'),
-(2, 2, 3, '2025-04-16 09:00:00', 2, 'Семейные отношения', 'Завершена. Обсуждение конфликта.'),
-(3, 3, 6, '2025-04-17 14:00:00', 1, 'Тревожность', 'Требуется дополнительное наблюдение.'),
-(4, 1, 3, '2025-04-10 15:00:00', 2, 'Переезд и адаптация', 'Обсуждение переезда в другой город.'),
-(5, 2, 6, '2025-04-13 13:00:00', 2, 'Страх публичных выступлений', 'Рекомендована практика.'),
-(6, 3, 2, '2025-04-11 12:00:00', 1, 'Прокрастинация', 'Обсуждение причин откладывания дел.');
+INSERT INTO `appointments` (`appointment_id`, `client_id`, `schedule_id`, `status`, `topic`, `notes`) VALUES
+(1, 1, 1, 1, 'Стресс на работе', 'Клиент жалуется на хроническую усталость.'),
+(2, 2, 3, 2, 'Проблемы в отношениях', 'Консультация завершена, предложены упражнения.'),
+(3, 3, 5, 1, 'Тревожность', 'Обсуждение источников тревоги и дыхательные практики.'),
+(4, 1, 2, 1, 'Неуверенность в себе', 'Проработка детских комплексов, назначена повторная встреча.'),
+(5, 2, 4, 1, 'Карьерный кризис', 'Выявлены страхи перемен, даны рекомендации.'),
+(6, 3, 6, 2, 'Посттравматическое восстановление', 'Завершен первый этап терапии.');
 
 -- --------------------------------------------------------
 
@@ -58,23 +57,22 @@ INSERT INTO `appointments` (`appointment_id`, `client_id`, `schedule_id`, `appoi
 CREATE TABLE `schedule` (
   `schedule_id` int(11) NOT NULL,
   `psychologist_id` int(11) NOT NULL,
-  `date` date NOT NULL COMMENT 'Дата доступности',
-  `time_from` time NOT NULL COMMENT 'Начало интервала',
-  `time_to` time NOT NULL COMMENT 'Конец интервала',
+  `datetime_from` datetime NOT NULL COMMENT 'Дата и время начала слота',
+  `datetime_to` datetime NOT NULL COMMENT 'Дата и время окончания слота',
   `status` enum('free','booked') DEFAULT 'free' COMMENT 'Статус слота'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Расписание доступных временных слотов психологов';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Расписание доступных временных слотов психологов';
 
 --
 -- Дамп данных таблицы `schedule`
 --
 
-INSERT INTO `schedule` (`schedule_id`, `psychologist_id`, `date`, `time_from`, `time_to`, `status`) VALUES
-(1, 4, '2025-04-15', '10:00:00', '11:00:00', 'free'),
-(2, 4, '2025-04-15', '11:00:00', '12:00:00', 'booked'),
-(3, 5, '2025-04-16', '09:00:00', '10:00:00', 'booked'),
-(4, 5, '2025-04-16', '10:00:00', '11:00:00', 'free'),
-(5, 6, '2025-04-17', '13:00:00', '14:00:00', 'free'),
-(6, 6, '2025-04-17', '14:00:00', '15:00:00', 'booked');
+INSERT INTO `schedule` (`schedule_id`, `psychologist_id`, `datetime_from`, `datetime_to`, `status`) VALUES
+(1, 4, '2025-04-15 10:00:00', '2025-04-15 11:00:00', 'booked'),
+(2, 4, '2025-04-15 12:00:00', '2025-04-15 13:00:00', 'free'),
+(3, 5, '2025-04-16 09:00:00', '2025-04-16 10:00:00', 'booked'),
+(4, 5, '2025-04-16 11:00:00', '2025-04-16 12:00:00', 'free'),
+(5, 6, '2025-04-17 15:00:00', '2025-04-17 16:00:00', 'booked'),
+(6, 6, '2025-04-17 17:00:00', '2025-04-17 18:00:00', 'free');
 
 -- --------------------------------------------------------
 
@@ -89,19 +87,19 @@ CREATE TABLE `users` (
   `email` varchar(100) NOT NULL COMMENT 'Email пользователя',
   `phone` varchar(20) DEFAULT NULL COMMENT 'Телефон пользователя',
   `role` enum('client','psychologist') NOT NULL COMMENT 'Роль пользователя: клиент или психолог'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Общая таблица пользователей системы';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Общая таблица пользователей системы';
 
 --
 -- Дамп данных таблицы `users`
 --
 
 INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `phone`, `role`) VALUES
-(1, 'Иван', 'Иванов', 'ivanov@mail.ru', '79001112233', 'client'),
-(2, 'Мария', 'Сидорова', 'sidorova@mail.ru', '79002223344', 'client'),
-(3, 'Анна', 'Козлова', 'kozlova@mail.ru', '79003334455', 'client'),
-(4, 'Олег', 'Смирнов', 'smirnov@mail.ru', '79004445566', 'psychologist'),
-(5, 'Екатерина', 'Орлова', 'orlova@mail.ru', '79005556677', 'psychologist'),
-(6, 'Артем', 'Белов', 'belov@mail.ru', '79006667788', 'psychologist');
+(1, 'Иван', 'Петров', 'ivan.petrov@example.com', '+79001112233', 'client'),
+(2, 'Мария', 'Сидорова', 'maria.sidorova@example.com', '+79003445566', 'client'),
+(3, 'Алексей', 'Кузнецов', 'aleksey.kuznecov@example.com', '+79007778899', 'client'),
+(4, 'Елена', 'Иванова', 'elena.ivanova@example.com', '+79000001111', 'psychologist'),
+(5, 'Дмитрий', 'Орлов', 'd.orlov@example.com', '+79002223344', 'psychologist'),
+(6, 'Светлана', 'Миронова', 'svetlana.mironova@example.com', '+79005556677', 'psychologist');
 
 --
 -- Индексы сохранённых таблиц
