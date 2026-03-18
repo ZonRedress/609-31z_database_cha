@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 14 2025 г., 17:28
+-- Время создания: Мар 18 2026 г., 12:01
 -- Версия сервера: 5.7.33
--- Версия PHP: 7.1.33
+-- Версия PHP: 7.4.27
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -46,7 +46,9 @@ INSERT INTO `appointments` (`appointment_id`, `client_id`, `schedule_id`, `statu
 (3, 3, 5, 1, 'Тревожность', 'Обсуждение источников тревоги и дыхательные практики.'),
 (4, 1, 2, 1, 'Неуверенность в себе', 'Проработка детских комплексов, назначена повторная встреча.'),
 (5, 2, 4, 1, 'Карьерный кризис', 'Выявлены страхи перемен, даны рекомендации.'),
-(6, 3, 6, 2, 'Посттравматическое восстановление', 'Завершен первый этап терапии.');
+(6, 3, 6, 2, 'Посттравматическое восстановление', 'Завершен первый этап терапии.'),
+(9, 3, 10, 1, 'выгорание', 'Клиент жалуется на хроническую усталость.'),
+(10, 11, 11, 1, 'проблема', 'проблема');
 
 -- --------------------------------------------------------
 
@@ -72,7 +74,11 @@ INSERT INTO `schedule` (`schedule_id`, `psychologist_id`, `datetime_from`, `date
 (3, 5, '2025-04-16 09:00:00', '2025-04-16 10:00:00', 'booked'),
 (4, 5, '2025-04-16 11:00:00', '2025-04-16 12:00:00', 'free'),
 (5, 6, '2025-04-17 15:00:00', '2025-04-17 16:00:00', 'booked'),
-(6, 6, '2025-04-17 17:00:00', '2025-04-17 18:00:00', 'free');
+(6, 6, '2025-04-17 17:00:00', '2025-04-17 18:00:00', 'free'),
+(7, 4, '2025-12-18 10:30:00', '2025-12-18 12:30:00', 'free'),
+(9, 4, '2026-03-18 09:00:00', '2026-03-18 11:00:00', 'booked'),
+(10, 4, '2026-03-18 08:00:00', '2026-03-18 12:00:00', 'booked'),
+(11, 4, '2026-03-19 13:00:00', '2026-03-18 16:00:00', 'booked');
 
 -- --------------------------------------------------------
 
@@ -86,20 +92,24 @@ CREATE TABLE `users` (
   `last_name` varchar(50) NOT NULL COMMENT 'Фамилия пользователя',
   `email` varchar(100) NOT NULL COMMENT 'Email пользователя',
   `phone` varchar(20) DEFAULT NULL COMMENT 'Телефон пользователя',
-  `role` enum('client','psychologist') NOT NULL COMMENT 'Роль пользователя: клиент или психолог'
+  `role` enum('client','psychologist') NOT NULL COMMENT 'Роль пользователя: клиент или психолог',
+  `password` varchar(255) DEFAULT NULL,
+  `photo` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Общая таблица пользователей системы';
 
 --
 -- Дамп данных таблицы `users`
 --
 
-INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `phone`, `role`) VALUES
-(1, 'Иван', 'Петров', 'ivan.petrov@mail.ru', '+79001112233', 'client'),
-(2, 'Мария', 'Сидорова', 'maria.sidorova@mail.ru', '+79003445566', 'client'),
-(3, 'Алексей', 'Кузнецов', 'aleksey.kuznecov@mail.ru', '+79007778899', 'client'),
-(4, 'Елена', 'Иванова', 'elena.ivanova@mail.ru', '+79000001111', 'psychologist'),
-(5, 'Дмитрий', 'Орлов', 'd.orlov@mail.ru', '+79002223344', 'psychologist'),
-(6, 'Светлана', 'Миронова', 'svetlana.mironova@mail.ru', '+79005556677', 'psychologist');
+INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `phone`, `role`, `password`, `photo`) VALUES
+(1, 'Иван', 'Петров', 'ivan.petrov@mail.ru', '+79001112233', 'client', '$2y$10$7wwCZBamv6OXv8p6vtetCuaeBxz7h.a6GXACQXEEji0Rhxg/ozBT2', 'NULL'),
+(2, 'Мария', 'Сидорова', 'maria.sidorova@mail.ru', '+79003445566', 'client', '$2y$10$7wwCZBamv6OXv8p6vtetCuaeBxz7h.a6GXACQXEEji0Rhxg/ozBT2', 'NULL'),
+(3, 'Алексей', 'Кузнецов', 'aleksey.kuznecov@mail.ru', '+79007778899', 'client', '$2y$10$7wwCZBamv6OXv8p6vtetCuaeBxz7h.a6GXACQXEEji0Rhxg/ozBT2', 'NULL'),
+(4, 'Елена', 'Иванова', 'elena.ivanova@mail.ru', '+79000001111', 'psychologist', '$2y$10$7wwCZBamv6OXv8p6vtetCuaeBxz7h.a6GXACQXEEji0Rhxg/ozBT2', 'uploads/1773824294_6.jpg'),
+(5, 'Дмитрий', 'Орлов', 'd.orlov@mail.ru', '+79002223344', 'psychologist', '$2y$10$7wwCZBamv6OXv8p6vtetCuaeBxz7h.a6GXACQXEEji0Rhxg/ozBT2', 'NULL'),
+(6, 'Светлана', 'Миронова', 'svetlana.mironova@mail.ru', '+79005556677', 'psychologist', '$2y$10$7wwCZBamv6OXv8p6vtetCuaeBxz7h.a6GXACQXEEji0Rhxg/ozBT2', 'NULL'),
+(8, 'Даниил', 'Колбасенко', 'daniil.kolbasenko@mail.ru', '+79035555555', 'client', '$2y$10$pUE86LT2s.yTEsBiQkv19eNfUqt.M5feho3RmI0SF.HZT9Hq/N9GS', NULL),
+(11, 'Александр', 'Паук', 'aleksander.payk@mail.ru', '+79032222222', 'client', '$2y$10$971CeVi6jZDkD39ExKL0iuheKpXIPaSMz7jVrrMJCiXMmYwYJuEVS', NULL);
 
 --
 -- Индексы сохранённых таблиц
@@ -135,19 +145,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT для таблицы `schedule`
 --
 ALTER TABLE `schedule`
-  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
